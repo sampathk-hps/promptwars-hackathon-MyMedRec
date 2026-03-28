@@ -7,7 +7,7 @@ export const LandingLayout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'var(--bg-color)' }}>
       {/* Sticky Navigation */}
-      <nav style={{
+      <nav aria-label="Main Navigation" style={{
         position: 'sticky', top: 0, zIndex: 50,
         backgroundColor: 'rgba(255,255,255,0.9)',
         backdropFilter: 'blur(8px)',
@@ -26,7 +26,7 @@ export const LandingLayout: React.FC = () => {
             <Link to="/app">
               <Button className="hidden-mobile">Try the Demo</Button>
             </Link>
-            <button className="hidden-desktop btn-outline p-2" style={{ borderRadius: 'var(--radius-md)' }}>
+            <button aria-label="Toggle Navigation Menu" className="hidden-desktop btn-outline p-2" style={{ borderRadius: 'var(--radius-md)' }}>
               <Menu size={24} />
             </button>
           </div>

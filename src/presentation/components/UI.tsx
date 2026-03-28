@@ -3,7 +3,7 @@ import React from 'react';
 export const Logo = () => (
   <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
     <div className="flex items-center text-primary">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 14C4 14 6 18 12 18C18 18 20 14 20 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         <path d="M7 10C7 10 8 13 12 13C16 13 17 10 17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
         <path d="M10 6C10 6 10.5 8 12 8C13.5 8 14 6 14 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

@@ -40,10 +40,17 @@ class ErrorBoundary extends Component<Props, State> {
   }
 }
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './application/context/AuthContext.tsx';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || 'placeholder'}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </GoogleOAuthProvider>
     </ErrorBoundary>
   </React.StrictMode>,
 )

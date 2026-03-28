@@ -79,6 +79,8 @@ const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visi
         <div className="mt-4 border-t pt-4">
           <button 
             onClick={() => setExpanded(!expanded)}
+            aria-expanded={expanded}
+            aria-controls={`transcript-${visit.id}`}
             className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
           >
             {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />} 
@@ -86,7 +88,7 @@ const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visi
           </button>
           
           {expanded && (
-            <div className="mt-4 bg-gray-50 p-4 rounded-lg text-sm flex flex-col gap-3 font-mono">
+            <div id={`transcript-${visit.id}`} className="mt-4 bg-gray-50 p-4 rounded-lg text-sm flex flex-col gap-3 font-mono">
               {visit.transcript.map((line, i) => (
                 <div key={i} className="flex gap-2">
                   <span className={`font-semibold shrink-0 ${line.speaker === 'Alex' ? 'text-primary' : 'text-text-primary'}`}>
@@ -208,13 +210,13 @@ const Recordings: React.FC = () => {
       {/* Filter/Sort Bar UI (non-functional demo) */}
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 py-4 border-y">
         <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
-          <select className="px-3 py-2 border rounded-md text-sm bg-white text-text-secondary outline-none">
+          <select aria-label="Filter by provider" className="px-3 py-2 border rounded-md text-sm bg-white text-text-secondary outline-none">
             <option>All Providers</option>
             <option>Primary Care</option>
             <option>Specialist</option>
             <option>Urgent Care</option>
           </select>
-          <select className="px-3 py-2 border rounded-md text-sm bg-white text-text-secondary outline-none">
+          <select aria-label="Filter by time period" className="px-3 py-2 border rounded-md text-sm bg-white text-text-secondary outline-none">
             <option>All Time</option>
             <option>Last 3 Months</option>
             <option>Last Year</option>
