@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mic, FileText, ChevronDown, ChevronUp, Pill, AlertTriangle } from 'lucide-react';
 import { Card, Badge, Button } from '../components/UI';
 import { useHealthRecord } from '../../application/hooks';
+import { useLiveRecording } from '../../application/useLiveRecording';
 import type { Visit } from '../../domain/types';
 
 const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visit, defaultExpanded = false }) => {
@@ -103,9 +104,10 @@ const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visi
 };
 
 const Recordings: React.FC = () => {
-  const { record, loading } = useHealthRecord();
+  const { record, loading: fetchingRecord } = useHealthRecord();
+  const { isRecording, transcripts, detectedKeywords, detectedMeds, startRecording, stopRecording } = useLiveRecording();
 
-  if (loading || !record) return <div className="p-8">Loading visits...</div>;
+  if (fetchingRecord || !record) return <div className="p-8">Loading visits...</div>;
 
   // sort visits newest first
   const sortedVisits = [...record.visits].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -113,31 +115,93 @@ const Recordings: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 w-full">
       {/* Decorative Active Recording Banner */}
-      <Card className="bg-coral-light border border-coral-light animate-pulse relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-coral rounded-full opacity-10 blur-3xl mix-blend-multiply"></div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="w-3 h-3 bg-coral rounded-full flex-shrink-0" style={{ boxShadow: '0 0 8px rgba(249,112,102,0.8)' }}></div>
-            <div>
-              <div className="font-bold text-coral">Recording in progress...</div>
-              <div className="text-sm text-text-secondary">General Practice — Started 14 min ago</div>
+      {isRecording ? (
+        <Card className="bg-coral-light border border-coral-light relative overflow-hidden flex flex-col gap-6 transition-all duration-500">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-coral rounded-full opacity-10 blur-3xl mix-blend-multiply"></div>
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-3 h-3 bg-coral rounded-full flex-shrink-0 animate-pulse" style={{ boxShadow: '0 0 8px rgba(249,112,102,0.8)' }}></div>
+              <div>
+                <div className="font-bold text-coral">Live Session Recording...</div>
+                <div className="text-sm text-text-secondary">Capture and Intelligence Active</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="flex gap-1 items-end h-6 opacity-75 animate-pulse">
+                <div className="w-1 bg-coral rounded-t-sm h-4"></div>
+                <div className="w-1 bg-coral rounded-t-sm h-6"></div>
+                <div className="w-1 bg-coral rounded-t-sm h-3"></div>
+                <div className="w-1 bg-coral rounded-t-sm h-5"></div>
+                <div className="w-1 bg-coral rounded-t-sm h-4"></div>
+              </div>
+              <Button variant="coral-outline" className="text-xs px-4 py-2" onClick={stopRecording}>Stop Recording</Button>
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="flex gap-1 items-end h-6">
-              <div className="waveform-bar h-4"></div>
-              <div className="waveform-bar h-6"></div>
-              <div className="waveform-bar h-3"></div>
-              <div className="waveform-bar h-5"></div>
-              <div className="waveform-bar h-4"></div>
+          
+          <div className="grid md:grid-cols-3 gap-6 relative z-10 mt-2">
+            <div className="md:col-span-2 bg-white/70 backdrop-blur-md rounded-xl p-4 min-h-[300px] max-h-[400px] overflow-y-auto flex flex-col gap-3 border shadow-sm">
+              <h4 className="font-semibold text-xs text-text-secondary uppercase tracking-wider sticky top-0 bg-white/90 backdrop-blur py-1 z-10">Live Transcript Diarization</h4>
+              {transcripts.length === 0 && <span className="text-sm italic text-muted p-2">Listening...</span>}
+              {transcripts.map((t) => (
+                <div key={t.id} className="flex gap-3 text-sm animate-in fade-in slide-in-from-bottom-2 p-2 rounded-lg bg-white/50 border border-transparent hover:border-border-color">
+                  <span className={`font-semibold shrink-0 w-16 text-right ${t.speaker === 'Doctor' ? 'text-primary' : 'text-coral'}`}>
+                    {t.speaker || 'Unknown'}
+                  </span>
+                  <span className="text-text-primary leading-relaxed">{t.text}</span>
+                </div>
+              ))}
             </div>
-            <Button variant="coral-outline" className="text-xs px-4 py-2">Stop Recording</Button>
+            <div className="md:col-span-1 flex flex-col gap-4">
+               <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border shadow-sm flex-1">
+                 <h4 className="font-semibold text-xs text-text-secondary uppercase tracking-wider mb-4 flex items-center gap-2">
+                   <AlertTriangle size={14} className="text-coral" /> Detected Medications
+                 </h4>
+                 <div className="flex flex-col gap-2">
+                    {detectedMeds.length === 0 && <span className="text-xs italic text-muted">Waiting for entities...</span>}
+                    {detectedMeds.map((med, i) => (
+                      <div key={i} className="px-3 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-semibold animate-in zoom-in flex items-center gap-2 shadow-sm">
+                        <Pill size={16}/> {med}
+                      </div>
+                    ))}
+                 </div>
+               </div>
+               <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border shadow-sm flex-1">
+                 <h4 className="font-semibold text-xs text-text-secondary uppercase tracking-wider mb-4">Live Keywords</h4>
+                 <div className="flex flex-wrap gap-2">
+                    {detectedKeywords.length === 0 && <span className="text-xs italic text-muted">Waiting for entities...</span>}
+                    {detectedKeywords.map((kw, i) => (
+                      <span key={i} className="px-2.5 py-1.5 bg-sky-50 text-sky-700 border border-sky-100 rounded-md text-xs font-medium animate-in zoom-in shadow-sm">
+                        {kw}
+                      </span>
+                    ))}
+                 </div>
+               </div>
+            </div>
           </div>
-        </div>
-      </Card>
 
-      <header className="flex flex-col gap-1 mt-2">
-        <h1 className="text-3xl font-bold">Your Visits</h1>
+        </Card>
+      ) : (
+        <Card className="bg-primary/5 border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-6 p-6">
+          <div className="flex items-start gap-4">
+             <div className="p-3 bg-primary/10 rounded-full text-primary shrink-0">
+               <Mic size={24} />
+             </div>
+             <div>
+               <h3 className="text-lg font-bold text-text-primary">Ready to Record</h3>
+               <p className="text-sm text-text-secondary mt-1 max-w-xl leading-relaxed">
+                 Start a new session to capture doctor-patient dialogue in real-time. Our Gemini medical intelligence layer will extract key symptoms and medications continuously as you speak.
+               </p>
+             </div>
+          </div>
+          <Button variant="primary" className="shrink-0 font-semibold px-6" onClick={startRecording}>
+            Start Live Recording
+          </Button>
+        </Card>
+      )}
+
+      <header className="flex flex-col gap-1 mt-6">
+        <h1 className="text-3xl font-bold">Your Past Visits</h1>
         <p className="text-muted">Every appointment, captured and summarised in plain English.</p>
       </header>
 

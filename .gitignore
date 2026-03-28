@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env
+.env.local
+.env.production
+server/promptwarsproject-491608-c4f1e1431c2a.json
