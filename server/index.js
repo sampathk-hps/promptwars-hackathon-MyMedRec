@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 const speech = require('@google-cloud/speech');
@@ -8,6 +9,10 @@ require('dotenv').config();
 
 const app = express();
 app.use(cors());
+
+// API-only server: Frontend is deployed separately.
+app.get('/health', (req, res) => res.send('OK'));
+
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -176,7 +181,7 @@ Text: "${transcriptText}"`;
 });
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Live Recording API Backend listening on port ${PORT}`);
   console.log(`Mock Mode: ${USE_MOCK ? 'ENABLED' : 'DISABLED'} (Provide GOOGLE_APPLICATION_CREDENTIALS and GEMINI_API_KEY to disable)`);
 });

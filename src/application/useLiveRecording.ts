@@ -20,7 +20,12 @@ export const useLiveRecording = () => {
 
   const startRecording = useCallback(async () => {
     try {
-      const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3001';
+      let defaultWsUrl = 'ws://localhost:3001';
+      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        defaultWsUrl = `${protocol}//${window.location.host}`;
+      }
+      const wsUrl = import.meta.env.VITE_WS_URL || defaultWsUrl;
       const socket = new WebSocket(wsUrl);
       wsRef.current = socket;
 

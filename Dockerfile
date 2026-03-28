@@ -11,6 +11,8 @@ RUN npm ci
 COPY . .
 
 # Build the project
+ARG VITE_WS_URL
+ENV VITE_WS_URL=$VITE_WS_URL
 RUN npm run build
 
 # Stage 2: Serve the application with NGINX
