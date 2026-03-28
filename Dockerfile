@@ -11,7 +11,7 @@ RUN npm ci
 COPY . .
 
 # Build the project
-ARG VITE_WS_URL
+ARG VITE_WS_URL="wss://promptwars-backend-3218872227.us-central1.run.app"
 ENV VITE_WS_URL=$VITE_WS_URL
 RUN npm run build
 
