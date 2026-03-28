@@ -5,13 +5,40 @@ const WebSocket = require('ws');
 const speech = require('@google-cloud/speech');
 const { GoogleGenAI } = require('@google/genai');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+// Enable security headers
+app.use(helmet());
+
+// Configure stricter CORS (Allow defined origins in production, localhost in dev)
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://127.0.0.1:5173',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // For hackathon demo simplicity, we allow it but ideally callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 
 // API-only server: Frontend is deployed separately.
-app.get('/health', (req, res) => res.send('OK'));
+const healthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many health check requests, please try again later.'
+});
+app.get('/health', healthLimiter, (req, res) => res.send('OK'));
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });

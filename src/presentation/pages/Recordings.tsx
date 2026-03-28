@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Mic, FileText, ChevronDown, ChevronUp, Pill, AlertTriangle } from 'lucide-react';
 import { Card, Badge, Button } from '../components/UI';
 import { useHealthRecord } from '../../application/hooks';
 import { useLiveRecording } from '../../application/useLiveRecording';
 import type { Visit } from '../../domain/types';
 
-const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visit, defaultExpanded = false }) => {
-  const [expanded, setExpanded] = useState(defaultExpanded);
+const getTypeColor = (type: string): 'coral' | 'sky' | 'teal' | 'indigo' | 'gray' => {
+  switch(type) {
+    case 'Urgent Care': return 'coral';
+    case 'Specialist': return 'sky';
+    case 'Primary Care': return 'teal';
+    case 'Telehealth': return 'indigo';
+    default: return 'gray';
+  }
+};
 
-  const getTypeColor = (type: string): 'coral' | 'sky' | 'teal' | 'indigo' | 'gray' => {
-    switch(type) {
-      case 'Urgent Care': return 'coral';
-      case 'Specialist': return 'sky';
-      case 'Primary Care': return 'teal';
-      case 'Telehealth': return 'indigo';
-      default: return 'gray';
-    }
-  };
+const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = React.memo(({ visit, defaultExpanded = false }) => {
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   return (
     <Card className="flex flex-col gap-4">
@@ -103,7 +103,9 @@ const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = ({ visi
       )}
     </Card>
   );
-};
+});
+
+VisitCard.displayName = 'VisitCard';
 
 const Recordings: React.FC = () => {
   const { record, loading: fetchingRecord } = useHealthRecord();
@@ -112,7 +114,9 @@ const Recordings: React.FC = () => {
   if (fetchingRecord || !record) return <div className="p-8">Loading visits...</div>;
 
   // sort visits newest first
-  const sortedVisits = [...record.visits].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const sortedVisits = useMemo(() => {
+    return [...record.visits].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [record.visits]);
 
   return (
     <div className="flex flex-col gap-6 w-full">
