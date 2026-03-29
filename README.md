@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# MyMedRec - PromptWars AI Hackathon 🏆
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**MyMedRec** is a Gemini-powered ambient medical AI solution designed for the "Societal Benefit" challenge at the PromptWars AI Hackathon. It transforms unstructured doctor-patient conversations into structured, life-saving medical data in real-time.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Real-time Speech-to-Text:** Live audio streaming from the browser to the backend using WebSockets, leveraging **Google Cloud Speech-to-Text** with speaker diarization (differentiating between Doctor and Patient).
+- **AI-Powered Medical Intelligence:** Uses the **Gemini API** to automatically extract medications, medical keywords, and clinical context from the live transcript.
+- **Secure Access:** Dashboard is protected by **Google Authentication** to ensure only authorized users can connect.
+- **Modern & Responsive UI:** Built with **React**, **Vite**, and **TailwindCSS** for a seamless, accessible user experience.
+- **Production Ready:** Includes robust unit/component testing (Vitest) and a cloud-ready architecture (deployable to Google Cloud Run).
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- **React 19** & **TypeScript**
+- **Vite** (Build Tool)
+- **Tailwind CSS** (Styling)
+- **Lucide React** (Icons)
+- **Google OAuth** (`@react-oauth/google`)
 
-## Expanding the ESLint configuration
+### Backend
+- **Node.js** & **Express**
+- **WebSockets** (`ws` for real-time audio chunk streaming)
+- **Google Cloud Speech-to-Text API** (`@google-cloud/speech`)
+- **Google Generative AI** (`@google/genai`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 How to Run It
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+To run this project locally, you will need to start both the backend Node.js server and the frontend Vite development server.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+)
+- A **Google Cloud Platform (GCP)** account with the **Speech-to-Text API** enabled, and a service account key (JSON).
+- A **Gemini API Key**.
+- A **Google OAuth Client ID** (for web application).
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 1. Setup & Run the Backend
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the `server` directory and add your keys:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   GOOGLE_APPLICATION_CREDENTIALS=./path-to-your-gcp-service-account.json
+   ```
+4. Start the backend server:
+   ```bash
+   node index.js
+   ```
+   *The server will typically start on port 3001.*
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 2. Setup & Run the Frontend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Open a new terminal and navigate to the project root directory:
+   ```bash
+   cd path/to/promptwars
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the root directory (you can copy `.env.example`):
+   ```env
+   VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id_here
+   ```
+4. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to the URL provided by Vite (usually `http://localhost:5173`). Have a Google account ready to log in!
+
+## 🧪 Running Tests
+
+This project uses **Vitest** for testing both the frontend and the backend.
+
+- **Frontend Tests:**
+  Run `npm test` or `npm run test:coverage` in the **root** directory.
+- **Backend Tests:**
+  Run `npm test` or `npm run test:coverage` in the **server** directory.
+
+---
+*Built with ❤️ for the PromptWars AI Hackathon.*

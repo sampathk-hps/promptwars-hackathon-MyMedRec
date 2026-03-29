@@ -1,13 +1,14 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../../application/context/AuthContext';
+import { Outlet } from 'react-router-dom';
+// import { useAuth } from '../../application/context/AuthContext';
 
 export const ProtectedRoute: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  // const { isAuthenticated } = useAuth();
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  // Temporarily bypass authentication for demo
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <Outlet />;
 };

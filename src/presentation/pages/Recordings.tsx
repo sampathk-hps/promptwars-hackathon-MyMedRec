@@ -91,7 +91,7 @@ const VisitCard: React.FC<{ visit: Visit; defaultExpanded?: boolean }> = React.m
             <div id={`transcript-${visit.id}`} className="mt-4 bg-gray-50 p-4 rounded-lg text-sm flex flex-col gap-3 font-mono">
               {visit.transcript.map((line, i) => (
                 <div key={i} className="flex gap-2">
-                  <span className={`font-semibold shrink-0 ${line.speaker === 'Alex' ? 'text-primary' : 'text-text-primary'}`}>
+                  <span className={`font-semibold shrink-0 ${line.speaker === 'Sam' ? 'text-primary' : 'text-text-primary'}`}>
                     {line.speaker}:
                   </span>
                   <span className="text-text-secondary leading-relaxed">{line.text}</span>

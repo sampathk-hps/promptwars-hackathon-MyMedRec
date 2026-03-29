@@ -20,7 +20,7 @@ const providers: Record<string, Provider> = {
 
 const patient: Patient = {
   id: 'u1',
-  firstName: 'Alex',
+  firstName: 'Sam',
   lastName: 'Johnson',
   dateOfBirth: 'June 14, 1991',
   bloodType: 'O+',
@@ -222,13 +222,13 @@ const visits: Visit[] = [
     ],
     transcript: [
       { speaker: 'Dr. Patel', text: 'So tell me what happened with your knee.' },
-      { speaker: 'Alex', text: "I went for a run on Saturday, about 8 miles, and by the end my right knee was really hurting. It's been sore ever since." },
+      { speaker: 'Sam', text: "I went for a run on Saturday, about 8 miles, and by the end my right knee was really hurting. It's been sore ever since." },
       { speaker: 'Dr. Patel', text: 'And where exactly is the pain?' },
-      { speaker: 'Alex', text: 'On the outside, kind of below the kneecap.' },
+      { speaker: 'Sam', text: 'On the outside, kind of below the kneecap.' },
       { speaker: 'Dr. Patel', text: "OK. I'm going to press around here — tell me if this hurts... I can feel some swelling around the lateral aspect of the patella. Range of motion looks fine though. I don't think we're dealing with a ligament tear, but I'd like to get an X-ray to rule out a stress fracture since you said you recently increased your mileage." },
-      { speaker: 'Alex', text: 'Sure, that makes sense.' },
+      { speaker: 'Sam', text: 'Sure, that makes sense.' },
       { speaker: 'Dr. Patel', text: "In the meantime, I'm going to prescribe you ibuprofen 600 milligrams. Take it three times a day with food. That should help with both the pain and the inflammation. And I want you to ice it — 20 minutes on, 20 minutes off — a few times a day. No running for at least two weeks." },
-      { speaker: 'Alex', text: 'OK, got it. When will I hear about the X-ray?' },
+      { speaker: 'Sam', text: 'OK, got it. When will I hear about the X-ray?' },
       { speaker: 'Dr. Patel', text: "We should have results within two to three business days. We'll call you. If things get worse before then or you're not feeling better after about ten days, come back and we'll take another look." },
     ],
   },
